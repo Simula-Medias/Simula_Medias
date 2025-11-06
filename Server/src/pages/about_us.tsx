@@ -163,7 +163,7 @@ const App: React.FC = () => {
             diretamente com o código, sua ajuda é muito bem-vinda.
           </p>
           <a
-            href="https://github.com/seu-usuario/seu-repositorio" // ATUALIZE COM O LINK REAL
+            href="https://github.com/Simula-Medias/Simula_Medias" // link do repositório oficial
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-6 py-3 bg-gray-900 dark:bg-gray-200 text-white dark:text-gray-900 rounded-lg font-medium shadow-md transition-transform transform hover:scale-105"
