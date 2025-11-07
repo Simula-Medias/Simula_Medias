@@ -2,6 +2,8 @@ import { GraduationCap, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { BookCheck } from 'lucide-react';
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,7 +20,7 @@ export const Header = () => {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary">
-              <GraduationCap className="h-6 w-6 text-white" />
+              <BookCheck />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
@@ -43,8 +45,9 @@ export const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* Theme Toggle and CTA Button */}
+          <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
             <a
               href="https://github.com/Simula-Medias/Simula_Medias"
               target="_blank"
@@ -69,17 +72,20 @@ export const Header = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 hover:bg-muted rounded-lg transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}

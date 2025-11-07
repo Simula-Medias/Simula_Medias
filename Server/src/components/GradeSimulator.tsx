@@ -26,6 +26,7 @@ export const GradeSimulator = ({ course, semester, discipline, onBack }: GradeSi
   const [average, setAverage] = useState<number | null>(null);
   const [initialized, setInitialized] = useState(false);
   const [activitiesConfig, setActivitiesConfig] = useState<EvaluationActivity[]>([]);
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
   const key = discipline?.trim() ?? "";
@@ -40,6 +41,7 @@ export const GradeSimulator = ({ course, semester, discipline, onBack }: GradeSi
   setActivitiesConfig(norm);
   setGrades(initial);
   setAverage(null);
+  setShowResult(false);
   setInitialized(true);
   }, [discipline]);
 
@@ -90,6 +92,7 @@ export const GradeSimulator = ({ course, semester, discipline, onBack }: GradeSi
     const avg = calculateAverage();
     if (avg !== null) {
       setAverage(avg);
+      setShowResult(true);
       const isPassed = avg >= 5;
       const message = isPassed
         ? `Parabéns! Sua média é ${avg.toFixed(2)} - Aprovado! 🎉`
@@ -105,7 +108,123 @@ export const GradeSimulator = ({ course, semester, discipline, onBack }: GradeSi
     }
   };
 
-  const showResult = average !== null;
+  const handleRecalculate = () => {
+    setShowResult(false);
+    setAverage(null);
+  };
+
+  // Se estiver mostrando resultado, exibe apenas a tela de resultado
+  if (showResult && average !== null) {
+    return (
+      <div className="w-full max-w-5xl mx-auto space-y-8 animate-fade-in px-4 py-6">
+        {/* Header compacto */}
+        <div className="bg-gradient-to-br from-card via-card to-card/95 rounded-2xl shadow-2xl p-6 border border-border/40 backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="space-y-2 flex-1 min-w-[250px]">
+              <div className="flex items-center gap-2.5 text-muted-foreground/80 text-sm font-medium">
+                <div className="p-1.5 rounded-lg bg-primary/10">
+                  <BookOpen className="w-4 h-4 text-primary" />
+                </div>
+                <span className="tracking-wide">Resultado Final</span>
+              </div>
+              <h2 className="text-2xl font-bold text-foreground leading-tight tracking-tight">{discipline}</h2>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{course}</span>
+                <span className="text-muted-foreground/60">•</span>
+                <span className="px-2.5 py-0.5 rounded-full bg-muted/50 font-medium">{semester}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card de Resultado Principal */}
+        <Card className="p-10 shadow-2xl border-border/40 animate-scale-in rounded-3xl bg-gradient-to-br from-card to-card/95 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
+          
+          <div className="space-y-8 relative z-10">
+            <div className="flex items-center justify-center gap-3 pb-6 border-b border-border/40">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <TrendingUp className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-3xl font-bold tracking-tight">Resultado da Avaliação</h3>
+            </div>
+            
+            {/* Média Principal */}
+            <div className="flex flex-col items-center justify-center p-12 rounded-3xl bg-gradient-to-br from-muted/30 via-muted/20 to-transparent border border-border/30 shadow-inner space-y-6">
+              <div className="text-center space-y-4">
+                <p className="text-base font-semibold text-muted-foreground uppercase tracking-wider">Sua Média Final</p>
+                <p className="text-8xl font-black bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent drop-shadow-lg">
+                  {average.toFixed(2)}
+                </p>
+                <p className="text-sm text-muted-foreground">de 10.0 pontos possíveis</p>
+              </div>
+              
+              <div className={`text-center p-8 rounded-3xl ${average >= 5 ? "bg-green-500/10" : average > 5 ? "bg-yellow-500/10" : "bg-red-500/10"}`}>
+                <Trophy className={`w-24 h-24 mb-4 mx-auto ${average >= 5 ? "text-green-600" : average > 5 ? "text-yellow-600" : "text-red-600"}`} />
+                <p className={`text-3xl font-black mb-2 ${average >= 5 ? "text-green-600" : average > 5 ? "text-yellow-600" : "text-red-600"}`}>
+                  {average >= 5 ? "Aprovado!" : average > 5 ? "Recuperação" : "Reprovado"}
+                </p>
+                <p className="text-sm text-muted-foreground max-w-md">
+                  {average >= 5
+                    ? "Parabéns! Você atingiu a média necessária para aprovação."
+                    : average > 5
+                    ? "Você precisará fazer a recuperação para ser aprovado."
+                    : "Infelizmente, você não atingiu a média necessária."}
+                </p>
+              </div>
+            </div>
+            
+            {/* Cards de Estatísticas */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-8 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 border border-border/30 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Nota Mínima</p>
+                <p className={`text-5xl font-black mb-2 ${average >= 5 ? "text-green-600" : "text-muted-foreground"}`}>
+                  5.0
+                </p>
+                <p className="text-sm text-muted-foreground">para aprovação</p>
+              </div>
+              <div className="p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Sua Média</p>
+                <p className={`text-5xl font-black mb-2 ${average >= 5 ? "text-green-600" : average > 5 ? "text-yellow-600" : "text-red-600"}`}>
+                  {average.toFixed(2)}
+                </p>
+                <p className="text-sm text-muted-foreground">média calculada</p>
+              </div>
+              <div className="p-8 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 border border-border/30 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Diferença</p>
+                <p className={`text-5xl font-black mb-2 ${average >= 5 ? "text-green-600" : "text-red-600"}`}>
+                  {average >= 5 ? "+" : ""}{(average - 5).toFixed(2)}
+                </p>
+                <p className="text-sm text-muted-foreground">pontos da média</p>
+              </div>
+            </div>
+
+            {/* Botões de Ação */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+              <Button
+                onClick={handleRecalculate}
+                variant="outline"
+                size="lg"
+                className="h-14 text-lg font-semibold rounded-xl border-2 hover:bg-muted/50 transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                <Calculator className="w-5 h-5 mr-2" />
+                Recalcular Notas
+              </Button>
+              <Button
+                onClick={onBack}
+                size="lg"
+                className="h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-xl hover:shadow-2xl rounded-xl"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Voltar ao Início
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8 animate-fade-in px-4 py-6">
@@ -192,63 +311,6 @@ export const GradeSimulator = ({ course, semester, discipline, onBack }: GradeSi
           </Button>
         </div>
       </Card>
-
-      {/* Resultado */}
-      {showResult && (
-        <Card className="p-8 shadow-2xl border-border/40 animate-scale-in rounded-2xl bg-gradient-to-br from-card to-card/95 backdrop-blur-sm overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
-          
-          <div className="space-y-6 relative z-10">
-            <div className="flex items-center gap-3 pb-4 border-b border-border/40">
-              <div className="p-2 rounded-xl bg-primary/10">
-                <TrendingUp className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold tracking-tight">Resultado da Avaliação</h3>
-            </div>
-            
-            <div className="flex items-center justify-between p-8 rounded-2xl bg-gradient-to-br from-muted/30 via-muted/20 to-transparent border border-border/30 shadow-inner">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Sua Média Final</p>
-                <p className="text-6xl font-black bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent drop-shadow-sm">
-                  {average.toFixed(2)}
-                </p>
-                <p className="text-xs text-muted-foreground">de 10.0 pontos possíveis</p>
-              </div>
-              <div className={`text-center p-6 rounded-2xl ${average >= 7 ? "bg-green-500/10" : average >= 5 ? "bg-yellow-500/10" : "bg-red-500/10"}`}>
-                <Trophy className={`w-16 h-16 mb-3 mx-auto ${average >= 7 ? "text-green-600" : average >= 5 ? "text-yellow-600" : "text-red-600"}`} />
-                <p className={`text-lg font-bold ${average >= 7 ? "text-green-600" : average >= 5 ? "text-yellow-600" : "text-red-600"}`}>
-                  {average >= 7 ? "Aprovado!" : average >= 5 ? "Recuperação" : "Reprovado"}
-                </p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <div className="p-6 rounded-xl bg-gradient-to-br from-muted/50 to-muted/30 border border-border/30 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Nota Mínima</p>
-                <p className={`text-3xl font-black ${average >= 7 ? "text-green-600" : "text-muted-foreground"}`}>
-                  7.0
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">para aprovação</p>
-              </div>
-              <div className="p-6 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Sua Média</p>
-                <p className={`text-3xl font-black ${average >= 7 ? "text-green-600" : average >= 5 ? "text-yellow-600" : "text-red-600"}`}>
-                  {average.toFixed(2)}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">média calculada</p>
-              </div>
-              <div className="p-6 rounded-xl bg-gradient-to-br from-muted/50 to-muted/30 border border-border/30 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Diferença</p>
-                <p className={`text-3xl font-black ${average >= 7 ? "text-green-600" : "text-red-600"}`}>
-                  {average >= 7 ? "+" : ""}{(average - 7).toFixed(2)}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">pontos da média</p>
-              </div>
-            </div>
-          </div>
-        </Card>
-      )}
     </div>
   );
 };

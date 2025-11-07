@@ -131,7 +131,8 @@ export const CourseSelector = ({ onConfirm }: CourseSelectorProps) => {
 
         <Button
           onClick={handleSubmit}
-          className="w-full md:col-span-3 h-12 rounded-xl text-base font-semibold bg-gradient-primary hover:opacity-90 transition-all duration-200 shadow-elegant hover:shadow-xl focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          disabled={!selectedCourse || !selectedSemester || !selectedDiscipline}
+          className="w-full md:col-span-3 h-12 rounded-xl text-base font-semibold bg-gradient-primary hover:opacity-90 transition-all duration-200 shadow-elegant hover:shadow-xl focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed"
           size="lg"
         >
           Confirmar Seleção
