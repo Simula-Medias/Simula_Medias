@@ -23,7 +23,7 @@ const Index = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-1 bg-gradient-subtle py-12 px-4">
+      <main className="flex-1 bg-background py-12 px-4">
         {selection ? (
           <GradeSimulator
             course={selection.course}

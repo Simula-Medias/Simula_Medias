@@ -18,8 +18,8 @@ export const semesters = [
 // Nested schema: curriculum[course][semester] = string[]
 export const curriculum: Record<string, Record<string, string[]>> = {
   "Engenharia de Controle e Automação": {
-    "1º Semestre": ["Cálculo I", "Introdução à Engenharia"],
-    "2º Semestre": ["Cálculo II", "Circuitos Elétricos"],
-    "3º Semestre": ["Sistemas de Controle", "Sinais e Sistemas"],
+    "2º Semestre": [
+      "Cálculo II", "Geometria Analítica e Álgebra Linear", "Física I"
+    ],
   },
 };
